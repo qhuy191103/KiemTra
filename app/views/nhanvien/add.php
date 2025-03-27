@@ -148,8 +148,15 @@
                                 <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
                                 Lương
                             </label>
-                            <input type="text" id="luong" name="luong" required
-                                   class="form-input" placeholder="Nhập mức lương">
+                            <input type="number" 
+                                   id="luong" 
+                                   name="luong" 
+                                   required
+                                   min="0"
+                                   step="1"
+                                   class="form-input" 
+                                   placeholder="Nhập mức lương (VD: 1000000)"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                         </div>
                     </div>
 
@@ -169,16 +176,33 @@
     </div>
 
     <script>
-        // Thêm định dạng số tiền khi nhập lương
-        document.getElementById('luong').addEventListener('input', function(e) {
-            let value = this.value.replace(/\D/g, '');
-            if (value === '') return;
-            this.value = new Intl.NumberFormat('vi-VN').format(value);
-        });
-
         // Validate mã nhân viên
         document.getElementById('ma_nv').addEventListener('input', function(e) {
             this.value = this.value.toUpperCase();
+        });
+
+        // Ngăn chặn các phím đặc biệt trong trường lương
+        document.getElementById('luong').addEventListener('keydown', function(e) {
+            // Cho phép: backspace, delete, tab, escape, enter, dấu chấm
+            if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                // Cho phép: Ctrl+A
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                // Cho phép: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                return;
+            }
+            // Chặn nếu không phải là số
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) &&
+                (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+        // Xóa các ký tự không phải số khi paste
+        document.getElementById('luong').addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            this.value = text.replace(/[^0-9]/g, '');
         });
     </script>
 </body>

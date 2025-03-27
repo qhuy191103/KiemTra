@@ -30,11 +30,28 @@ class NhanVienController {
     }
 
     public function index() {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: index.php?controller=user&action=login');
-            exit;
-        }
-        $nhanvien = $this->nhanVienModel->getAllNhanVien();
+        $this->checkAdmin();
+        
+        // Lấy số trang hiện tại
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = max(1, $page); // Đảm bảo page không nhỏ hơn 1
+        
+        // Số lượng record trên mỗi trang
+        $limit = 5;
+        
+        // Lấy tổng số record
+        $totalRecords = $this->nhanVienModel->getTotalRecords();
+        
+        // Tính tổng số trang
+        $totalPages = ceil($totalRecords / $limit);
+        
+        // Đảm bảo page không vượt quá tổng số trang
+        $page = min($page, $totalPages);
+        
+        // Lấy danh sách nhân viên cho trang hiện tại
+        $nhanviens = $this->nhanVienModel->getAllWithPagination($page, $limit);
+        
+        // Truyền dữ liệu sang view
         require_once 'app/views/nhanvien/list.php';
     }
 
@@ -46,7 +63,7 @@ class NhanVienController {
             $gioi_tinh = $_POST['gioi_tinh'];
             $noi_sinh = $_POST['noi_sinh'];
             $ma_phong = $_POST['ma_phong'];
-            $luong = $_POST['luong'];
+            $luong = (int)$_POST['luong'];
 
             if ($this->nhanVienModel->addNhanVien($ma_nv, $ten_nv, $gioi_tinh, $noi_sinh, $ma_phong, $luong)) {
                 header("Location: index.php?controller=nhanvien&action=index");

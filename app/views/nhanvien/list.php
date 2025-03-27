@@ -238,7 +238,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($nhanvien as $nv): ?>
+                    <?php foreach ($nhanviens as $nv): ?>
                     <tr>
                         <td>
                             <span class="badge-id"><?php echo htmlspecialchars($nv['ma_nv']); ?></span>
@@ -278,6 +278,34 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <!-- Phân trang -->
+            <?php if ($totalPages > 1): ?>
+            <div class="mt-4 flex justify-center">
+                <nav class="flex items-center gap-1">
+                    <?php if ($page > 1): ?>
+                        <a href="?controller=nhanvien&action=index&page=<?php echo ($page - 1); ?>" 
+                           class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="?controller=nhanvien&action=index&page=<?php echo $i; ?>" 
+                           class="px-3 py-1 <?php echo $i === $page ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'; ?> rounded-md hover:bg-blue-600 hover:text-white">
+                            <?php echo $i; ?>
+                        </a>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $totalPages): ?>
+                        <a href="?controller=nhanvien&action=index&page=<?php echo ($page + 1); ?>" 
+                           class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <?php endif; ?>
+                </nav>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>

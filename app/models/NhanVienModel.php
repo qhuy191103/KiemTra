@@ -43,5 +43,29 @@ class NhanVienModel {
         $stmt->bind_param("s", $ma_nv);
         return $stmt->execute();
     }
+
+    public function getAllWithPagination($page = 1, $limit = 5) {
+        $offset = ($page - 1) * $limit;
+        
+        $sql = "SELECT nv.*, pb.ten_phong 
+                FROM nhanvien nv 
+                LEFT JOIN phongban pb ON nv.ma_phong = pb.ma_phong 
+                ORDER BY nv.ma_nv 
+                LIMIT ? OFFSET ?";
+                
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getTotalRecords() {
+        $sql = "SELECT COUNT(*) as total FROM nhanvien";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
 }
 ?> 
