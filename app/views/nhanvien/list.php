@@ -214,10 +214,6 @@
     
     <div class="content">
         <div class="content-header">
-            <h1 class="content-title">
-                <i class="fas fa-users"></i>
-                Danh sách nhân viên
-            </h1>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
             <a href="index.php?controller=nhanvien&action=add" class="btn-add">
                 <i class="fas fa-user-plus"></i>
